@@ -1,0 +1,30 @@
+# Install with: cd backend && uv run pre-commit install --install-hooks -t pre-commit -t pre-push
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff format
+        entry: bash -c 'cd backend && uv run ruff format'
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+      - id: ruff-check
+        name: ruff check
+        entry: bash -c 'cd backend && uv run ruff check --fix'
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+      - id: mypy
+        name: mypy --strict
+        entry: bash -c 'cd backend && uv run mypy .'
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+      # Needs the postgres-test container, so it runs on push rather than every commit.
+      - id: pytest
+        name: pytest
+        entry: bash -c 'cd backend && uv run pytest -q'
+        language: system
+        files: ^backend/
+        pass_filenames: false
+        stages: [pre-push]
