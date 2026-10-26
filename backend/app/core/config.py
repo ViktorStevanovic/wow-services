@@ -26,6 +26,7 @@ class Settings(BaseSettings):
 
     app_name: str = "Forever Service Board"
     environment: Environment = Environment.DEVELOPMENT
+    log_level: str = "INFO"
 
     # Database
     database_url: str = "postgresql+asyncpg://forever:forever@localhost:5433/forever"

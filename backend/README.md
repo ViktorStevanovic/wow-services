@@ -38,11 +38,25 @@ make dev                     # API on http://localhost:8000
 | `make openapi` | Write `openapi.json` for the frontend type generator |
 | `make db-up` / `make db-down` | Start / stop the Postgres containers |
 
+## Migrations
+
+- Register every new `models.py` in `app/models_registry.py`, then `make makemigration name="..."`.
+- **Always review the generated file**: autogenerate misses extensions, some enum changes and
+  data migrations. Check that `downgrade()` really undoes `upgrade()`.
+- Constraint and index names come from the naming convention in `app/core/models.py`.
+
 ## Tests
 
 Tests run against a real Postgres (`postgres-test` in `../docker-compose.yml`, data in RAM).
 They never read your `.env`: settings are built in `tests/conftest.py`. Point them at another
 database with `TEST_DATABASE_URL`.
+
+- The test database is migrated to `head` once per run; `tests/test_migrations.py` also checks
+  downgrade → upgrade and that the models match the migrations (a forgotten migration fails).
+- Each test gets `db_session`, a session inside a transaction that is rolled back afterwards.
+  Service `commit()` calls only release a savepoint. The `client` fixture uses the same session.
+- Test data comes from polyfactory factories subclassing `tests.factories.BaseFactory`.
+- Tables defined only in tests must start with `test_`.
 
 ## Pre-commit
 
@@ -56,13 +70,15 @@ ruff and mypy run on every commit; pytest runs on push (it needs the test databa
 
 ```
 app/
-  main.py          create_app(): routers, lifespan
+  main.py          create_app(): middleware, error handlers, routers, lifespan
   asgi.py          module-level `app` for servers
   api.py           mounts every feature router under /api
-  core/            config, db, shared schemas and dependencies
+  core/            config, db, base models/schemas, errors, logging, request-ID middleware
+  models_registry.py  imports every table model (for Alembic)
   features/<name>/ router → service → schemas/models, one folder per feature
   integrations/    external APIs (Blizzard)
   worker/          scheduled jobs
+alembic/           migrations
 seeds/             mock data
 tests/             mirrors app/features
 ```
