@@ -33,8 +33,10 @@ class Settings(BaseSettings):
 
     # Web
     frontend_url: str = "http://localhost:3000"
-    session_secret: SecretStr
-    token_encryption_key: SecretStr
+    # High-entropy random strings, e.g. `secrets.token_urlsafe(32)` (43 characters).
+    session_secret: SecretStr = Field(min_length=32)
+    token_encryption_key: SecretStr = Field(min_length=32)
+    session_lifetime_days: int = Field(default=30, gt=0)
 
     # Blizzard / Battle.net. The Forever namespaces are unknown until launch (spec §13),
     # so they have no defaults and are only required in live mode.
@@ -59,6 +61,11 @@ class Settings(BaseSettings):
     whisper_format: str = (
         "/w {character_name} Hi! I saw your {service} listing on {site_name} ({price})."
     )
+
+    @property
+    def cookie_secure(self) -> bool:
+        """`Secure` cookies in production; development and tests run on plain http."""
+        return self.environment is Environment.PRODUCTION
 
     @field_validator("blizzard_regions", mode="before")
     @classmethod

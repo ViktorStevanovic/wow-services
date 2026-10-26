@@ -1,5 +1,6 @@
 import os
 from collections.abc import AsyncIterator, Iterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 import pytest
@@ -29,8 +30,8 @@ def make_settings(**overrides: object) -> Settings:
     values: dict[str, object] = {
         "environment": Environment.TEST,
         "database_url": TEST_DATABASE_URL,
-        "session_secret": SecretStr("test-session-secret"),
-        "token_encryption_key": SecretStr("test-token-encryption-key"),
+        "session_secret": SecretStr("test-session-secret-0123456789abcdef"),
+        "token_encryption_key": SecretStr("test-token-encryption-key-0123456789"),
     }
     values.update(overrides)
     return Settings(_env_file=None, **values)  # type: ignore[arg-type]  # dynamic test overrides
@@ -88,8 +89,9 @@ def settings() -> Settings:
     return make_settings()
 
 
-@pytest.fixture
-async def app(settings: Settings, db_session: AsyncSession) -> AsyncIterator[FastAPI]:
+@asynccontextmanager
+async def running_app(settings: Settings, db_session: AsyncSession) -> AsyncIterator[FastAPI]:
+    """The app with its lifespan running, using the test's rolled-back session."""
     application = create_app(settings)
 
     async def _test_session() -> AsyncIterator[AsyncSession]:
@@ -100,9 +102,19 @@ async def app(settings: Settings, db_session: AsyncSession) -> AsyncIterator[Fas
         yield application
 
 
+def http_client(application: FastAPI, base_url: str = "http://test.local") -> AsyncClient:
+    # raise_app_exceptions=False: let unhandled errors reach the app's 500 handling.
+    transport = ASGITransport(app=application, raise_app_exceptions=False)
+    return AsyncClient(transport=transport, base_url=base_url)
+
+
+@pytest.fixture
+async def app(settings: Settings, db_session: AsyncSession) -> AsyncIterator[FastAPI]:
+    async with running_app(settings, db_session) as application:
+        yield application
+
+
 @pytest.fixture
 async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
-    # raise_app_exceptions=False: let unhandled errors reach the app's 500 handling.
-    transport = ASGITransport(app=app, raise_app_exceptions=False)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+    async with http_client(app) as ac:
         yield ac

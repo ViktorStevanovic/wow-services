@@ -23,6 +23,18 @@ make dev                     # API on http://localhost:8000
 
 `BLIZZARD_MODE=mock` (the default) runs without any Battle.net credentials.
 
+### Signing in locally (mock mode)
+
+The browser flow is the real one; only Battle.net is replaced by `seeds/blizzard/accounts.json`.
+
+1. Pick an account: <http://localhost:8000/api/auth/dev/accounts>
+2. Sign in as it: <http://localhost:8000/api/auth/dev/login?account=eu-varek>
+   (or <http://localhost:8000/api/auth/battlenet/login?region=eu> for the region's first account).
+3. You end up on `FRONTEND_URL` (nothing there until the frontend exists; that's fine).
+   The `fsb_session` cookie is set for `localhost`.
+4. <http://localhost:8000/api/me> shows the signed-in user. In `/docs`, "Try it out" sends the
+   cookie too. Sign out with `POST /api/auth/logout`.
+
 ## Everyday commands
 
 | Command | What it does |
