@@ -56,6 +56,13 @@ class BusinessRuleError(AppError):
     message = "This request breaks a rule."
 
 
+class UpstreamServiceError(AppError):
+    """An external service (e.g. the Blizzard API) failed or can't serve the request."""
+
+    code = "upstream_error"
+    message = "An external service is unavailable. Try again later."
+
+
 # Most specific class first: the first match wins.
 _STATUS_BY_ERROR: tuple[tuple[type[AppError], HTTPStatus], ...] = (
     (NotAuthenticatedError, HTTPStatus.UNAUTHORIZED),
@@ -63,6 +70,7 @@ _STATUS_BY_ERROR: tuple[tuple[type[AppError], HTTPStatus], ...] = (
     (NotFoundError, HTTPStatus.NOT_FOUND),
     (ConflictError, HTTPStatus.CONFLICT),
     (BusinessRuleError, HTTPStatus.UNPROCESSABLE_ENTITY),
+    (UpstreamServiceError, HTTPStatus.BAD_GATEWAY),
 )
 
 _CODE_BY_HTTP_STATUS = {

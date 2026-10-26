@@ -14,6 +14,7 @@ from app.core.errors import (
     ForbiddenError,
     NotAuthenticatedError,
     NotFoundError,
+    UpstreamServiceError,
 )
 from app.core.schemas import InputSchema
 
@@ -38,6 +39,7 @@ async def raise_domain_error(name: str) -> None:
         "not_found": NotFoundError("Listing not found."),
         "conflict": ListingAlreadyActiveError(details={"serviceType": "summon"}),
         "business_rule": BusinessRuleError(),
+        "upstream": UpstreamServiceError(),
     }
     raise errors[name]
 
@@ -68,6 +70,7 @@ async def probe_client(app: FastAPI) -> AsyncIterator[AsyncClient]:
         ("not_found", 404, "not_found"),
         ("conflict", 409, "listing_already_active"),
         ("business_rule", 422, "business_rule_violation"),
+        ("upstream", 502, "upstream_error"),
     ],
 )
 async def test_domain_errors_map_to_status_and_envelope(

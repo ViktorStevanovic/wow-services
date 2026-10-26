@@ -1,0 +1,40 @@
+{
+  "_comment": "Mock Battle.net accounts for BLIZZARD_MODE=mock. last_logout_hours_ago is relative to now, so 'inactive' stays inactive. Names are unique per region.",
+  "accounts": [
+    {
+      "key": "eu-varek",
+      "account_id": "100001",
+      "battletag": "Varek#2101",
+      "region": "eu",
+      "characters": [
+        {"id": 9001, "first_name": "Morgath", "last_name": "Ashveil", "ruleset": "normal", "faction": "horde", "race": "Orc", "class": "warlock", "level": 60, "guild": "Ember Pact", "last_logout_hours_ago": 1},
+        {"id": 9002, "first_name": "Seris", "last_name": "Dawnmere", "ruleset": "normal", "faction": "alliance", "race": "Skyborne", "class": "mage", "level": 60, "guild": null, "last_logout_hours_ago": 3},
+        {"id": 9003, "first_name": "Kaela", "last_name": "Nightbloom", "ruleset": "pvp", "faction": "horde", "race": "Undead", "class": "rogue", "level": 52, "guild": "Black Lotus", "last_logout_hours_ago": 20},
+        {"id": 9004, "first_name": "Wenric", "last_name": "Fallow", "ruleset": "rp", "faction": "alliance", "race": "Human", "class": "warrior", "level": 34, "guild": null, "last_logout_hours_ago": 720}
+      ]
+    },
+    {
+      "key": "eu-lunara",
+      "account_id": "100002",
+      "battletag": "Lunara#4410",
+      "region": "eu",
+      "characters": [
+        {"id": 9011, "first_name": "Ilyra", "last_name": "Windcrest", "ruleset": "normal", "faction": "alliance", "race": "Skyborne", "class": "warlock", "level": 58, "guild": "Silver Wing", "last_logout_hours_ago": 2},
+        {"id": 9012, "first_name": "Toruk", "last_name": "Grimtusk", "ruleset": "normal", "faction": "horde", "race": "Tauren", "class": "druid", "level": 60, "guild": "Ember Pact", "last_logout_hours_ago": 5},
+        {"id": 9013, "first_name": "Pell", "last_name": "Ashdown", "ruleset": "hardcore", "faction": "alliance", "race": "Gnome", "class": "mage", "level": 27, "guild": null, "last_logout_hours_ago": 8},
+        {"id": 9014, "first_name": "Thessa", "last_name": "Moonridge", "ruleset": "pvp", "faction": "alliance", "race": "Night Elf", "class": "hunter", "level": 60, "guild": null, "last_logout_hours_ago": 30}
+      ]
+    },
+    {
+      "key": "us-dorin",
+      "account_id": "200001",
+      "battletag": "Dorin#7788",
+      "region": "us",
+      "characters": [
+        {"id": 9021, "first_name": "Zara", "last_name": "Emberfall", "ruleset": "normal", "faction": "horde", "race": "Troll", "class": "mage", "level": 60, "guild": "Dusk Tide", "last_logout_hours_ago": 1},
+        {"id": 9022, "first_name": "Dorin", "last_name": "Quickwhistle", "ruleset": "rp", "faction": "alliance", "race": "Gnome", "class": "warlock", "level": 44, "guild": null, "last_logout_hours_ago": 6},
+        {"id": 9023, "first_name": "Nyx", "last_name": "Featherfall", "ruleset": "normal", "faction": "horde", "race": "Skyborne", "class": "priest", "level": 60, "guild": "Dusk Tide", "last_logout_hours_ago": 4}
+      ]
+    }
+  ]
+}
